@@ -11,13 +11,18 @@ const getAllOrders = async () => {
 }
 
 const saveOrder = async (order) => {
-    return await localCollection.save(order)
+    return await localCollection.insertOne(order)
+}
+
+const updateOrderByOrderNumber = async (order) => {
+    return await localCollection.updateOne({ orderNumber: order.orderNumber }, order)
 }
 
 const OrdersCollection = {
     init,
     getAllOrders,
-    saveOrder
+    saveOrder,
+    updateOrderByOrderNumber
 }
 
 export { OrdersCollection }

@@ -11,19 +11,19 @@ router.post('/order-created', async (req, res) => {
 
 router.post('/order-paid', async (req, res) => {
     const webhookOrder = req.body
-    await WebhooksService.saveOrder(webhookOrder)
+    await WebhooksService.updateOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-updated', async (req, res) => {
     const webhookOrder = req.body
-    await WebhooksService.saveOrder(webhookOrder)
+    await WebhooksService.updateOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-refunded', async (req, res) => {
     const webhookOrder = req.body
-    await WebhooksService.saveOrder(webhookOrder)
+    await WebhooksService.updateOrder(webhookOrder)
     res.send('ok')
 })
 

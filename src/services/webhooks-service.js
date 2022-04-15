@@ -6,8 +6,14 @@ const saveOrder = async (order) => {
     return OrdersCollection.saveOrder(orderToSave)
 }
 
+const updateOrder = async (order) => {
+    const orderToUpdate = new WebhookOrderEventRequest(order).mapToOrder()
+    return OrdersCollection.updateOrderByOrderNumber(orderToUpdate)
+}
+
 const WebhooksService = {
-    saveOrder
+    saveOrder,
+    updateOrder
 }
 
 export { WebhooksService }
