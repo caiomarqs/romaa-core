@@ -3,7 +3,7 @@ import express from "express"
 const router = express.Router()
 
 router.post('/order-created', async (req, res) => {
-    console.log(req.body)
+    console.log(req)
     res.send('ok')
 })
 

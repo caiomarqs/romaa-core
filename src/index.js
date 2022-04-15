@@ -9,8 +9,13 @@ app.get('/', (req, res) => {
     res.send("Romã core ON")
 })
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: true}))
+
 const startup = () => {
     runMongo().then(() => {
+
+
         jupyterRoutes(app)
         webhooksRoutes(app)
         console.log('Starting server on 3000')
