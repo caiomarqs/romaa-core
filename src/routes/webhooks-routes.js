@@ -2,8 +2,8 @@ import express from "express"
 
 const router = express.Router()
 
-router.get('/order-created', async (req, res) => {
-    console.log('req:', req)
+router.post('/order-created', async (req, res) => {
+    console.log(req.body)
     res.send('ok')
 })
 
