@@ -1,6 +1,6 @@
 import express from "express";
 import { runMongo } from "./data";
-import { jupyterRoutes, webhooksRoutes } from "./routes";
+import { jupyterRoutes, loginRoutes, webhooksRoutes } from "./routes";
 
 const app = express();
 const port = process.env.PORT || 3000
@@ -14,10 +14,9 @@ app.use(express.urlencoded({ extended: true}))
 
 const startup = () => {
     runMongo().then(() => {
-
-
         jupyterRoutes(app)
         webhooksRoutes(app)
+        loginRoutes(app)
         console.log('Starting server on 3000')
     }).catch(error => {
         console.log(error)

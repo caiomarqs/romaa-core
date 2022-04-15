@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb'
 import { env } from '../dot-env';
 import { OrdersCollection } from './orders-collection';
+import { UserCollection } from './user-collection';
 
 const uri = env.mongoUri
 
@@ -13,6 +14,7 @@ const runMongo = async () => {
         await db.command({ ping: 1 });
 
         OrdersCollection.init(db.collection("orders"))
+        UserCollection.init(db.collection("users"))
 
         console.log("Connected successfully to database")
 
