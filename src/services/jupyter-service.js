@@ -1,5 +1,5 @@
 import { OrdersCollection } from "../data"
-import { OrdersWithNoClient } from "../models"
+import { OrdersWithNoClient } from "../models/Responses"
 
 const getAllOrders = async () => {
     return await OrdersCollection.getAllOrders()

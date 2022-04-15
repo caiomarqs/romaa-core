@@ -1,24 +1,29 @@
 import express from "express"
+import { WebhooksService } from "../services"
 
 const router = express.Router()
 
 router.post('/order-created', async (req, res) => {
-    console.log(JSON.stringify(req.body))
+    const webhookOrder = JSON.parse(req.body)
+    await WebhooksService.saveOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-paid', async (req, res) => {
-    console.log(JSON.stringify(req.body))
+    const webhookOrder = JSON.parse(req.body)
+    await WebhooksService.saveOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-updated', async (req, res) => {
-    console.log(JSON.stringify(req.body))
+    const webhookOrder = JSON.parse(req.body)
+    await WebhooksService.saveOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-refunded', async (req, res) => {
-    console.log(JSON.stringify(req.body))
+    const webhookOrder = JSON.parse(req.body)
+    await WebhooksService.saveOrder(webhookOrder)
     res.send('ok')
 })
 

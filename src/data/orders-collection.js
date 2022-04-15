@@ -10,9 +10,14 @@ const getAllOrders = async () => {
     return await localCollection.find({}).toArray()
 }
 
+const saveOrder = async (order) => {
+    return await localCollection.save(order)
+}
+
 const OrdersCollection = {
     init,
-    getAllOrders
+    getAllOrders,
+    saveOrder
 }
 
 export { OrdersCollection }
