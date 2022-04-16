@@ -1,3 +1,4 @@
+import { convertDocumentNumberToNumber } from "../../utils"
 import { Order } from "../Order"
 import { Product } from "../Products"
 
@@ -28,11 +29,11 @@ class WebhookOrderEventRequest {
         order.country = this.order.address.country
 
         if (this.order.customer.cpf) {
-            order.cpf = this.order.customer.cpf.replace(/\.\-\/\\/, '')
+            order.cpf = convertDocumentNumberToNumber(this.order.customer.cpf)
         }
 
         if (this.order.customer.cnpj) {
-            order.cnpj = this.order.customer.cnpj.replace(/\.\-\/\\/, '')
+            order.cnpj = convertDocumentNumberToNumber(this.order.customer.cnpj)
         }
 
         order.fullName = `${this.order.customer.firstName} ${this.order.customer.lastName}`
@@ -45,7 +46,7 @@ class WebhookOrderEventRequest {
         order.shippingCost = this.order.orderShippings.price
         order.aliExpressOrderNumber = this.order.lineItems ? this.order.lineItems[0].aliExpressOrderNumber : ""
         order.trackingNo = this.order.orderShippings.code
-        order.status = ""
+        order.status = this.order.statusId
         order.reembolsado = ""
         order.pagoPeloCliente = this.order.totalPrice
         order.recebivelCartPandaPayments = this.orderrecebivelCartPandaPayments
