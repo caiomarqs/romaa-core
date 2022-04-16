@@ -1,5 +1,6 @@
 import express from "express";
 import { runMongo } from "./data";
+import { dontSleep } from "./dont-sleep";
 import { jupyterRoutes, loginRoutes, webhooksRoutes } from "./routes";
 
 const app = express();
@@ -10,14 +11,17 @@ app.get('/', (req, res) => {
 })
 
 app.use(express.json())
-app.use(express.urlencoded({ extended: true}))
+app.use(express.urlencoded({ extended: true }))
 
 const startup = () => {
     runMongo().then(() => {
+        dontSleep()
+
         jupyterRoutes(app)
         webhooksRoutes(app)
         loginRoutes(app)
-        console.log('Starting server on 3000')
+
+        console.log(`Starting server on ${port}`)
     }).catch(error => {
         console.log(error)
     })
