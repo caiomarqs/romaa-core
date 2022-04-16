@@ -20,6 +20,7 @@ router.post('/order-paid', async (req, res) => {
 
 router.post('/order-updated', async (req, res) => {
     const webhookOrder = req.body
+    console.log(webhookOrder)
     await WebhooksService.updateOrder(webhookOrder)
     res.send('ok')
 })
