@@ -1,7 +1,10 @@
 import express from "express"
+import { LoggerMiddleware } from "../middlewares"
 import { WebhooksService } from "../services"
 
 const router = express.Router()
+
+router.use((req, res, next) => LoggerMiddleware.webhooksLogger(req, res, next))
 
 router.post('/order-created', async (req, res) => {
     const webhookOrder = req.body

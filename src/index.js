@@ -1,6 +1,7 @@
 import express from "express";
 import { runMongo } from "./data";
 import { dontSleep } from "./dont-sleep";
+import { LoggerMiddleware } from "./middlewares";
 import { jupyterRoutes, loginRoutes, webhooksRoutes } from "./routes";
 
 const app = express();
@@ -17,6 +18,8 @@ const startup = () => {
     runMongo().then(() => {
         dontSleep()
 
+        LoggerMiddleware.applicationLogger(app)
+        
         jupyterRoutes(app)
         webhooksRoutes(app)
         loginRoutes(app)
