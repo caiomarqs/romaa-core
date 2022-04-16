@@ -6,7 +6,7 @@ class WebhookOrderEventRequest {
         this.event = req.event
         this.order = new WebhookOrderRequest(req.order)
     }
-    
+
     /**
      * 
      * @returns {Order}
@@ -156,6 +156,11 @@ class WebhookOrderRequest {
         this.customer = new WebhookOrderCustomerRequest(order.customer)
         this.orderShippings = new WebhookOrderShippingsRequest(order.orders_shippings)
         this.shop = new WebhookOrderShopRequest(order.shop)
+
+        if(order.payment_type || !order.payment.payment_type){
+            order.payment.payment_type = order.payment_type
+        }
+        
         this.payment = new WebhookOrderPaymentRequest(order.payment)
     }
 }
@@ -231,7 +236,7 @@ class WebhookOrderLineItemsRequest {
         this.appointmentData = lineItem.appointment_data
         this.appType = lineItem.app_type
         this.appTypeId = lineItem.app_type_id
-        this.variant = new WebhookOrderVariantRequest(lineItem.variant)
+        this.variant = lineItem.variant ? new WebhookOrderVariantRequest(lineItem.variant) : {}
     }
 }
 
@@ -338,7 +343,6 @@ class WebhookOrderShopRequest {
         this.redirectionUrl = shop.redirection_url
         this.termAndServices = shop.term_and_services
         this.passwordPageMessage = shop.password_page_message
-        this.permanentDomain = shop.permanent_domain
     }
 }
 
