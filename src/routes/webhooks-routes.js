@@ -30,6 +30,18 @@ router.post('/order-refunded', async (req, res) => {
     res.send('ok')
 })
 
+router.post('/product-created', async () => {
+    console.log(JSON.parse(req.body))
+})
+
+router.post('/product-updated', async () => {
+    console.log(JSON.parse(req.body))
+})
+
+router.post('/product-deleted', async () => {
+    console.log(JSON.parse(req.body))
+})
+
 const webhooksRoutes = (app) => {
     app.use('/webhooks', router)
 }
