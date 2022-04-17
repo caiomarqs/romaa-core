@@ -31,15 +31,15 @@ router.post('/order-refunded', async (req, res) => {
 })
 
 router.post('/product-created', async (req, res) => {
-    console.log(JSON.parse(req.body))
+    console.log(JSON.stringify(req.body))
 })
 
 router.post('/product-updated', async (req, res) => {
-    console.log(JSON.parse(req.body))
+    console.log(JSON.stringify(req.body))
 })
 
 router.post('/product-deleted', async (req, res) => {
-    console.log(JSON.parse(req.body))
+    console.log(JSON.stringify(req.body))
 })
 
 const webhooksRoutes = (app) => {
