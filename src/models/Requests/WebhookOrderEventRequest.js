@@ -57,14 +57,14 @@ class WebhookOrderEventRequest {
         order.paymentMethod = this.order.payment.paymentType
         order.fulfillmentStatus = this.getFulfillmentStatus()
         order.trackingCode = this.order.orderShippings.code
-        order.products = this.order.lineItems.map(lineItem => new Product(
-            lineItem.sku,
-            lineItem.name,
-            lineItem.variantTitle,
-            lineItem.price,
-            lineItem.productId,
-            lineItem.quantity
-        ))
+        order.products = this.order.lineItems.map(lineItem => new Product({
+            sku: lineItem.sku,
+            productName: lineItem.name,
+            variantName: lineItem.variantTitle,
+            price: lineItem.price,
+            productId: lineItem.productId,
+            productCount: lineItem.quantity
+        }))
 
         return order
     }
@@ -90,13 +90,13 @@ class WebhookOrderEventRequest {
     }
 
     getStatus() {
-        if(this.getFulfillmentStatus() === "Fulfilled"){
+        if (this.getFulfillmentStatus() === "Fulfilled") {
             return "Processado"
         }
-        if(this.event.split('.')[1] === "created"){
+        if (this.event.split('.')[1] === "created") {
             return "Aberto"
         }
-        if(this.event.split('.')[1] !== "paid" && this.order.status_id === "Cancelled"){
+        if (this.event.split('.')[1] !== "paid" && this.order.status_id === "Cancelled") {
             return "Cancelado"
         }
     }

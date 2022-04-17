@@ -1,18 +1,11 @@
 class Product {
-    constructor(
-        sku,
-        productName,
-        variantName,
-        price,
-        productId,
-        productCount
-    ) {
-        this.sku = sku
-        this.productName = productName
-        this.variantName = variantName
-        this.price = price
-        this.productId = productId
-        this.productCount = productCount
+    constructor(product) {
+        this.sku = product.sku
+        this.productName = product.productName
+        this.variantName = product.variantName
+        this.price = product.price
+        this.productId = product.productId
+        this.productCount = product.productCount
     }
 }
 

@@ -1,6 +1,8 @@
 import { Order } from '../Order'
+import { ProductJupyter } from './ProductJupyter'
 
 class OrdersJupyter extends Order {
+     
     /**
      * 
      * @param {Order} order 
@@ -13,6 +15,9 @@ class OrdersJupyter extends Order {
         this.shippingCompany = company.trim()
         this.shippingService = service.trim()
         this.shippingDays = Number.parseInt(days.trim().replace(/\D/g, ""))
+        this.products = this.products.map(product => (
+            new ProductJupyter(order.orderNumber, product)
+        ))
     }
 }
 
