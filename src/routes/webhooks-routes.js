@@ -32,14 +32,17 @@ router.post('/order-refunded', async (req, res) => {
 
 router.post('/product-created', async (req, res) => {
     console.log(JSON.stringify(req.body))
+    res.send('ok')
 })
 
 router.post('/product-updated', async (req, res) => {
     console.log(JSON.stringify(req.body))
+    res.send('ok')
 })
 
 router.post('/product-deleted', async (req, res) => {
     console.log(JSON.stringify(req.body))
+    res.send('ok')
 })
 
 const webhooksRoutes = (app) => {

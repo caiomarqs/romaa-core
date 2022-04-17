@@ -17,7 +17,7 @@ class WebhookOrderEventRequest {
 
         order.date = this.order.createdAt
         order.updatedAt = this.order.updatedAt
-        order.orderNumber = this.order.orderNumber
+        order.orderNumber = Number.parseInt(this.order.orderNumber)
         order.lineItemNumber = this.order.lineItems?.length
         order.email = this.order.email
         order.contactPerson = `${this.order.customer.firstName} ${this.order.customer.lastName} - ${this.order.customer.cpf || this.order.customer.cnpj}`
@@ -84,21 +84,25 @@ class WebhookOrderEventRequest {
         if (this.event.split('.')[1] === "paid") {
             return "Paid"
         }
-        if (this.event.split('.')[1] !== "paid" && this.order.status_id === "Cancelled") {
+        if (this.order.status_id === "Cancelled") {
             return "Unpaid"
+        }
+        if(this.event.split('.')[1] === "updated" && this.order.status_id !== "Cancelled"){
+            return "Paid"
         }
     }
 
     getStatus() {
-        if (this.getFulfillmentStatus() === "Fulfilled") {
-            return "Processado"
-        }
         if (this.event.split('.')[1] === "created") {
             return "Aberto"
         }
-        if (this.event.split('.')[1] !== "paid" && this.order.status_id === "Cancelled") {
+        if (this.order.status_id === "Cancelled") {
             return "Cancelado"
         }
+        if (this.getFulfillmentStatus() === "Fulfilled") {
+            return "Processado"
+        }
+        return "Aberto"
     }
 }
 
