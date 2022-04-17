@@ -2,7 +2,9 @@ import { OrdersCollection } from "../data"
 import { OrdersWithNoClient } from "../models/Responses"
 
 const getAllOrders = async () => {
-    return await OrdersCollection.getAllOrders()
+    const orders = await OrdersCollection.getAllOrders()
+    const models = orders.map(order =>  new OrdersJupyter(order))
+    return models
 }
 
 const getAllOrdersNoClients = async () => {

@@ -6,8 +6,6 @@ const router = express.Router()
 
 router.post('/', async (req, res) => {
     const { name, password } = req.body
-    console.log(req.body)
-
     const user = await LoginService.getUser(name, password)
 
     if (!user) {
