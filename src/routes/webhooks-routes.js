@@ -30,15 +30,15 @@ router.post('/order-refunded', async (req, res) => {
     res.send('ok')
 })
 
-router.post('/product-created', async () => {
+router.post('/product-created', async (req, res) => {
     console.log(JSON.parse(req.body))
 })
 
-router.post('/product-updated', async () => {
+router.post('/product-updated', async (req, res) => {
     console.log(JSON.parse(req.body))
 })
 
-router.post('/product-deleted', async () => {
+router.post('/product-deleted', async (req, res) => {
     console.log(JSON.parse(req.body))
 })
 
