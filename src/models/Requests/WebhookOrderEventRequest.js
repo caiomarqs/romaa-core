@@ -43,18 +43,19 @@ class WebhookOrderEventRequest {
         order.shippingMethod = this.order.orderShippings.title
         order.totalCostOfOrder = this.order.totalPrice
         order.productsTotal = this.order.subtotalPrice
+        order.paymentGateway = this.order.payment_gateway
         order.shippingCost = this.order.orderShippings.price
         order.aliExpressOrderNumber = this.order.lineItems ? this.order.lineItems[0].aliExpressOrderNumber : ""
         order.trackingNo = this.order.orderShippings.code
-        order.status = this.order.statusId
-        order.reembolsado = ""
+        order.status = this.getStatus()
+        order.reembolsado = 0
         order.pagoPeloCliente = this.order.totalPrice
         order.recebivelCartPandaPayments = this.orderrecebivelCartPandaPayments
         order.authCode = ""
         order.nsu = ""
-        order.paymentStatus = this.event.split('.')[1]
+        order.paymentStatus = this.getPaymentStatus()
         order.paymentMethod = this.order.payment.paymentType
-        order.fulfillmentStatus = ""
+        order.fulfillmentStatus = this.getFulfillmentStatus()
         order.trackingCode = this.order.orderShippings.code
         order.products = this.order.lineItems.map(lineItem => new Product(
             lineItem.sku,
@@ -66,6 +67,38 @@ class WebhookOrderEventRequest {
         ))
 
         return order
+    }
+
+    getFulfillmentStatus() {
+        if (this.order.fulfillment_status) {
+            if (this.order.fulfillment_status.toLocaleLowerCase() !== "unfulfilled") {
+                return "Fulfilled"
+            }
+        }
+        else {
+            return "Unfulfilled"
+        }
+    }
+
+    getPaymentStatus() {
+        if (this.event.split('.')[1] === "paid") {
+            return "Paid"
+        }
+        if (this.event.split('.')[1] !== "paid" && this.order.status_id === "Cancelled") {
+            return "Unpaid"
+        }
+    }
+
+    getStatus() {
+        if(this.getFulfillmentStatus() === "Fulfilled"){
+            return "Processado"
+        }
+        if(this.event.split('.')[1] === "created"){
+            return "Aberto"
+        }
+        if(this.event.split('.')[1] !== "paid" && this.order.status_id === "Cancelled"){
+            return "Cancelado"
+        }
     }
 }
 
@@ -158,10 +191,10 @@ class WebhookOrderRequest {
         this.orderShippings = new WebhookOrderShippingsRequest(order.orders_shippings)
         this.shop = new WebhookOrderShopRequest(order.shop)
 
-        if(order.payment_type || !order.payment.payment_type){
+        if (order.payment_type || !order.payment.payment_type) {
             order.payment.payment_type = order.payment_type
         }
-        
+
         this.payment = new WebhookOrderPaymentRequest(order.payment)
     }
 }

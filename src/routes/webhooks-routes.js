@@ -8,28 +8,24 @@ router.use((req, res, next) => LoggerMiddleware.webhooksLogger(req, res, next))
 
 router.post('/order-created', async (req, res) => {
     const webhookOrder = req.body
-    console.log(JSON.stringify(webhookOrder))
     await WebhooksService.saveOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-paid', async (req, res) => {
     const webhookOrder = req.body
-    console.log(JSON.stringify(webhookOrder))
     await WebhooksService.updateOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-updated', async (req, res) => {
     const webhookOrder = req.body
-    console.log(JSON.stringify(webhookOrder))
     await WebhooksService.updateOrder(webhookOrder)
     res.send('ok')
 })
 
 router.post('/order-refunded', async (req, res) => {
     const webhookOrder = req.body
-    console.log(JSON.stringify(webhookOrder))
     await WebhooksService.updateOrder(webhookOrder)
     res.send('ok')
 })

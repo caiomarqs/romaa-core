@@ -37,6 +37,7 @@ class Order {
             this.fulfillmentStatus = order.fulfillmentStatus
             this.trackingCode = order.trackingCode
             this.products = order.products
+            this.paymentGateway = order.paymentGateway
         }
     }
 }
