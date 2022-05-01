@@ -41,8 +41,8 @@ class WebhookOrderEventRequest {
         order.orderMemo = ""
         order.orderCustomNotes = this.order.customNotes
         order.shippingMethod = this.order.orderShippings.title
-        order.totalCostOfOrder = this.order.totalPrice
-        order.productsTotal = this.order.subtotalPrice
+        order.totalCostOfOrder = Number.parseFloat(this.order.totalPrice)
+        order.productsTotal = Number.parseFloat(this.order.subtotalPrice)
         order.paymentGateway = this.order.payment_gateway
         order.shippingCost = this.order.orderShippings.price
         order.aliExpressOrderNumber = this.order.lineItems ? this.order.lineItems[0].aliExpressOrderNumber : ""
@@ -256,7 +256,7 @@ class WebhookOrderLineItemsRequest {
         this.totalDiscountSet = lineItem.total_discount_set
         this.discountAllocations = lineItem.discount_allocations
         this.shippingMethod = lineItem.shipping_method
-        this.totalCostOfOrder = lineItem.total_cost_of_order
+        this.totalCostOfOrder = Number.parseInt(lineItem.total_cost_of_order)
         this.aliExpressOrderNumber = lineItem.aliexpress_order_number
         this.trackingNo = lineItem.tracking_no
         this.statusId = lineItem.status_id

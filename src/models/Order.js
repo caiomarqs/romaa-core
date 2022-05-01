@@ -4,7 +4,7 @@ class Order {
             this.id = order.id
             this.date = order.date
             this.updatedAt = order.updatedAt ? order.updatedAt : order.date
-            this.orderNumber = order.orderNumber
+            this.orderNumber = Number.parseInt(order.orderNumber)
             this.lineItemNumber = order.lineItemNumber
             this.email = order.email
             this.contactPerson = order.contactPerson
@@ -21,14 +21,14 @@ class Order {
             this.orderMemo = order.orderMemo
             this.orderCustomNotes = order.orderCustomNotes
             this.shippingMethod = order.shippingMethod
-            this.totalCostOfOrder = order.totalCostOfOrder
-            this.productsTotal = order.productsTotal
+            this.totalCostOfOrder = Number.parseFloat(order.totalCostOfOrder)
+            this.productsTotal = Number.parseFloat(order.productsTotal)
             this.shippingCost = order.shippingCost
             this.aliExpressOrderNumber = order.aliExpressOrderNumber
             this.trackingNo = order.trackingNo
             this.status = order.status
             this.reembolsado = order.reembolsado
-            this.pagoPeloCliente = order.pagoPeloCliente
+            this.pagoPeloCliente =  Number.parseFloat(order.pagoPeloCliente)
             this.recebivelCartPandaPayments = order.recebivelCartPandaPayments
             this.authCode = order.authCode
             this.nsu = order.nsu

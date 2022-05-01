@@ -10,6 +10,7 @@ const getAllOrders = async () => {
 
     const elements = [
         'date',
+        'updatedAt',
         'orderNumber',
         'zipCode',
         'city',
@@ -25,7 +26,13 @@ const getAllOrders = async () => {
         'pagoPeloCliente',
         'paymentStatus',
         'paymentMethod',
-        'fulfillmentStatus'
+        'fulfillmentStatus',
+        'shippingGetway',
+        'shippingCompany',
+        'shippingService',
+        'shippingDays',
+        'productsCost',
+        'products'
     ]
 
     const models = orders.map(order => (

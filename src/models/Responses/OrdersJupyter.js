@@ -9,13 +9,14 @@ class OrdersJupyter extends Order {
      */
     constructor(order) {
         const [getway, company, service, days] = order.shippingMethod.split('-')
-
+        console.log(order.totalCostOfOrder)
+        console.log(order.shippingCost)
         super(order)
         this.shippingGetway = getway.trim()
         this.shippingCompany = company.trim()
         this.shippingService = service.trim()
         this.shippingDays = Number.parseInt(days.trim().replace(/\D/g, ""))
-        this.productsCost = this.orderValue - this.shippingCost
+        this.productsCost = Number.parseFloat((order.totalCostOfOrder - order.shippingCost).toFixed(2))
         this.products = this.products.map(product => (
             new ProductJupyter(order.orderNumber, product)
         ))
