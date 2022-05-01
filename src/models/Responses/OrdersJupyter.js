@@ -2,7 +2,7 @@ import { Order } from '../Order'
 import { ProductJupyter } from './ProductJupyter'
 
 class OrdersJupyter extends Order {
-     
+
     /**
      * 
      * @param {Order} order 
@@ -15,9 +15,31 @@ class OrdersJupyter extends Order {
         this.shippingCompany = company.trim()
         this.shippingService = service.trim()
         this.shippingDays = Number.parseInt(days.trim().replace(/\D/g, ""))
+        this.productsCost = this.orderValue - this.shippingCost
         this.products = this.products.map(product => (
             new ProductJupyter(order.orderNumber, product)
         ))
+    }
+
+    translatePaymentMethodsValues() {
+        if (this.paymentMethod === '') {
+            this.paymentMethod = 'pix'
+        }
+        if (this.paymentMethod === 'cc') {
+            this.paymentMethod = 'Credit Card'
+        }
+
+        return this
+    }
+
+    getPrincipalElements(...args) {
+        const obj = {}
+
+        args.forEach(argument => {
+            obj[argument] = this[argument]
+        })
+
+        return obj
     }
 }
 

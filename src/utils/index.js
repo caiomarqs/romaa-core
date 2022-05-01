@@ -1,1 +1,2 @@
-export * from './stringUtils'
+export * from './string-utils'
+export * from './object-utils'
