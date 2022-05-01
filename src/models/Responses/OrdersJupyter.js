@@ -8,9 +8,13 @@ class OrdersJupyter extends Order {
      * @param {Order} order 
      */
     constructor(order) {
-        const [getway, company, service, days] = order.shippingMethod.split('-')
-        console.log(order.totalCostOfOrder)
-        console.log(order.shippingCost)
+        const [
+            getway,
+            company,
+            service,
+            days
+        ] = order.shippingMethod.split('-')
+
         super(order)
         this.shippingGetway = getway.trim()
         this.shippingCompany = company.trim()
