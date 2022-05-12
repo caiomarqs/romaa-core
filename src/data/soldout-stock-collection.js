@@ -10,7 +10,10 @@ const getStock = async () => {
     return await localCollection.find({}).toArray()
 }
 
-const saveStock = async () => {}
+const saveStock = async (stock) => {
+    await localCollection.deleteMany({})
+    await localCollection.insertMany(stock)
+}
 
 const SoldoutStockCollection = {
     init,

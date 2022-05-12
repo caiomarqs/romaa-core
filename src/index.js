@@ -4,6 +4,7 @@ import { dontSleep } from "./dont-sleep";
 import { LoggerMiddleware } from "./middlewares";
 import { jupyterRoutes, loginRoutes, webhooksRoutes } from "./routes";
 import { soldoutRoutes } from "./routes/soldout-routes";
+import path from 'path'
 
 const app = express();
 const port = process.env.PORT || 3000
@@ -14,6 +15,7 @@ app.get('/', (req, res) => {
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname, 'public')))
 
 const startup = () => {
     runMongo().then(() => {
@@ -31,5 +33,7 @@ const startup = () => {
         console.log(error)
     })
 }
+
+
 
 app.listen(port, startup)

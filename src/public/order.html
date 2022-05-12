@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venda SoldOut</title>
+</head>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
+
+<body class="root">
+</body>
+
+<script>
+
+    $.ajax("/sold-out/stock")
+        .then(data => {
+            const models = [...new Set(data.map(i => i.model))]
+            const color = [...new Set(data.map(i => i.color))]
+            const sizes = [...new Set(data.map(i => i.size))]
+
+            const getOption = (options) => {
+                return options.map(option => `<option value="${option}" id="${option}">${option}</option>`)
+            }
+
+            const productsHtml = (i) => `
+                <hr></hr>
+                <div class="product-${i}">
+                        <div class="formbuilder-select form-group field-select-1652321812335">
+                            <label for="select-1652321812335" class="formbuilder-select-label">Modelo</label>
+                            <select class="form-control" name="select-1652321812335" id="model-select-${i}">
+                                ${getOption(models)}
+                            </select>
+                        </div>
+                        <br></br>
+                        <div class="formbuilder-select form-group field-select-1652321814301">
+                            <label for="select-1652321814301" class="formbuilder-select-label">Cor</label>
+                            <select class="form-control" name="select-1652321814301" id="color-select-${i}">
+                                ${getOption(color)}
+                            </select>
+                        </div>
+                        <br></br>
+                        <div class="formbuilder-select form-group field-select-1652321816060">
+                            <label for="select-1652321816060" class="formbuilder-select-label">Tamanho</label>
+                            <select class="form-control" name="select-1652321816060" id="tamanho-select-${i}">
+                                ${getOption(sizes)}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <hr></hr>
+            `
+
+            const modelHTML =
+                `
+            <div class="rendered-form">
+                <div class="formbuilder-text form-group field-name">
+                    <label for="name" class="formbuilder-text-label">Nome<span class="formbuilder-required">*</span></label>
+                    <input type="text" class="form-control" name="name" access="false" id="name" required="required" aria-required="true">
+                </div>
+                <br></br>
+                <br></br>
+                <div class="formbuilder-text form-group field-text-1652321247791">
+                    <label for="text-1652321247791" class="formbuilder-text-label">CPF<span class="formbuilder-required">*</span></label>
+                    <input type="text" class="cpf" name="text-1652321247791" access="false" id="text-1652321247791" required="required" aria-required="true">
+                </div>
+                <br></br>
+                <br></br>
+                <div class="products">
+                    ${productsHtml(1)}
+                </div>
+                <div class="formbuilder-button form-group field-send">
+                    <button type="button" class="btn-default btn" name="send" access="false" style="default" id="send">Adicionar Produto</button>
+                </div>
+                <br></br>
+                <br></br>
+                <div class="formbuilder-text form-group field-text-1652321249848">
+                    <label for="text-1652321249848" class="formbuilder-text-label">Preço<span class="formbuilder-required">*</span></label>
+                    <input type="text" class="form-control" name="text-1652321249848" access="false" id="text-1652321249848" required="required" aria-required="true">
+                </div>
+                <br></br>
+                <br></br>
+                <div class="formbuilder-button form-group field-send">
+                    <button type="button" class="btn-default btn" name="send" access="false" style="default" id="send">Enviar</button>
+                </div>
+            </div>
+            
+            `
+
+            document.querySelector('.root').innerHTML = modelHTML
+        })
+        .catch(error => {
+            console.log(`Ta falhando tudooo`)
+        })
+
+</script>
+
+
+</html>

@@ -6,7 +6,9 @@ const init = (colletion) => {
     }
 }
 
-const saveOrder = () => {}
+const saveOrder = async (order) => {
+    return await localCollection.insertOne(order)
+}
 
 const SoldoutOrderCollection = {
     init,
