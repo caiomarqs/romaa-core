@@ -12,13 +12,32 @@
     crossorigin="anonymous"></script>
 
 <body class="root">
+    <table>
+        <thead>
+            <th>Modelo</th>
+            <th>Cor</th>
+            <th>Tamanho</th>
+            <th>Quantidade</th>
+        </thead>
+        <tbody class="corpo">
+        </tbody>
+    </table>
 </body>
 
 <script>
 
+    const linha = (produto) => 
+    `   <tr>
+            <td>${produto.model}</td>
+            <td>${produto.color}</td>
+            <td>${produto.size}</td>
+            <td>${produto.qntd}</td>
+        </tr>
+    `
+
     $.ajax("/sold-out/stock")
         .then(data => {
-            document.querySelector('.root').innerHTML = JSON.stringify(data)
+            document.querySelector('.corpo').innerHTML = data.map(item => linha(item)).toString().replace(/,/g, '')
         })
         .catch(error => {
             console.log(`Ta falhando tudooo`)
