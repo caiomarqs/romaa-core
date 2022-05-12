@@ -1,3 +1,5 @@
 export * from './mongo-config'
 export * from './orders-collection'
 export * from './user-collection'
+export * from './soldout-order-collection'
+export * from './soldout-stock-collection'

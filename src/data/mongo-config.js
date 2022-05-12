@@ -1,6 +1,8 @@
 import { MongoClient } from 'mongodb'
 import { env } from '../dot-env';
 import { OrdersCollection } from './orders-collection';
+import { SoldoutCollection, SoldoutOrderCollection } from './soldout-order-collection';
+import { SoldoutStockCollection } from './soldout-stock-collection';
 import { UserCollection } from './user-collection';
 
 const uri = env.mongoUri
@@ -15,6 +17,8 @@ const runMongo = async () => {
 
         OrdersCollection.init(db.collection("orders"))
         UserCollection.init(db.collection("users"))
+        SoldoutStockCollection.init(db.collection("soldout-stock"))
+        SoldoutOrderCollection.init(db.collection("soldout-orders"))
 
         console.log("Connected successfully to database")
 

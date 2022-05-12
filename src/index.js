@@ -3,6 +3,7 @@ import { runMongo } from "./data";
 import { dontSleep } from "./dont-sleep";
 import { LoggerMiddleware } from "./middlewares";
 import { jupyterRoutes, loginRoutes, webhooksRoutes } from "./routes";
+import { soldoutRoutes } from "./routes/soldout-routes";
 
 const app = express();
 const port = process.env.PORT || 3000
@@ -20,6 +21,7 @@ const startup = () => {
 
         LoggerMiddleware.applicationLogger(app)
         
+        soldoutRoutes(app)
         jupyterRoutes(app)
         webhooksRoutes(app)
         loginRoutes(app)
