@@ -8,6 +8,7 @@
     <title>Venda SoldOut</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="order.css">
 </head>
 
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -15,7 +16,6 @@
 
 <body class="root" style="padding: 1rem">
 </body>
-
 <script>
     const valuesOfModels = []
     $.ajax("/sold-out/stock")
@@ -41,6 +41,7 @@
             const productsHtml = (i) => `
                 <div class="product-${i} product-div">
                     <hr></hr>
+                    <div class="estoque-view" id="estoque-view-${i}"></div>
                     <div class="mb-3">
                         <label for="model-${i}" class="form-label model">Modelo</label>
                         <select class="form-select model" name="model-${i}" id="model-${i}">
@@ -95,6 +96,27 @@
 
             document.querySelector('.root').innerHTML = modelHTML
 
+            const checkEstoque = (model, size, color, productIndex) => {
+                let estoqueItem = data.find(estoque => (
+                    estoque.model == model
+                    && estoque.size == size
+                    && estoque.color == color
+                ))?.qntd
+
+                estoqueItem = estoqueItem == null ? 0 : estoqueItem
+
+                document.querySelector(`#estoque-view-${productIndex}`).innerHTML = `<span>Estoque to item: ${estoqueItem}<span>`
+            }
+
+            const checkEstoqueBySize = (e) => {
+                const element = e.target
+                const productIndex = Number.parseInt(element.id.split('-')[1])
+
+                const { model, qntd, size, color } = getProductInfos(e, element, productIndex)
+
+
+                checkEstoque(model, size, color, productIndex)
+            }
 
             const calcAllPrices = () => {
                 if (document.querySelectorAll('.product-div').length != 0) {
@@ -143,6 +165,8 @@
                         price: actualPrice
                     })
                 }
+
+                checkEstoque(model, size, color, productIndex)
 
                 let priceOfOrder = products.map(product => product.price).reduce((sum, actual) => sum + actual)
 
@@ -221,6 +245,8 @@
             const addEventListeners = () => {
                 const modelBtns = document.querySelectorAll('.model')
                 const qntdBtns = document.querySelectorAll('.qntd')
+                const sizeBtns = document.querySelectorAll('.size')
+                const colorBtns = document.querySelectorAll('.color')
 
                 if (modelBtns && qntdBtns) {
                     modelBtns.forEach(modelBtn => {
@@ -229,6 +255,14 @@
 
                     qntdBtns.forEach(qntdBtn => {
                         qntdBtn.addEventListener('keyup', calcPrice)
+                    })
+
+                    sizeBtns.forEach(sizeBtn => {
+                        sizeBtn.addEventListener('change', checkEstoqueBySize)
+                    })
+
+                    colorBtns.forEach(colorBtn => {
+                        colorBtn.addEventListener('change', checkEstoqueBySize)
                     })
                 }
             }
@@ -258,11 +292,11 @@
 
             document.querySelector('#enviar').addEventListener('click', (e) => {
                 e.preventDefault()
-                
+
                 const name = document.querySelector('#name').value
                 const cpf = document.querySelector('#cpf').value
                 const price = document.querySelector('#price').value
-                
+
                 calcAllPrices()
 
                 $.post('/sold-out/order', {
@@ -280,7 +314,6 @@
         .catch(error => {
             console.log(`Ta falhando tudooo`)
         })
-
 </script>
 
 
