@@ -28,6 +28,8 @@
                 { model: "Touca", price: 67.9 }
             ]
 
+            const errors = []
+
             let products = []
 
             const models = [...new Set(data.map(i => i.model))]
@@ -96,7 +98,7 @@
 
             document.querySelector('.root').innerHTML = modelHTML
 
-            const checkEstoque = (model, size, color, productIndex) => {
+            const checkEstoque = (model, size, color, qntd, productIndex) => {
                 let estoqueItem = data.find(estoque => (
                     estoque.model == model
                     && estoque.size == size
@@ -104,6 +106,23 @@
                 ))?.qntd
 
                 estoqueItem = estoqueItem == null ? 0 : estoqueItem
+
+                if (estoqueItem == 0) {
+                    errors.push(true)
+                }
+
+                if (!qntd) {
+                    errors.push(true)
+                }
+                else {
+                    if (qntd > estoqueItem) {
+                        errors.push(true)
+                    }
+
+                    if (qntd == 0) {
+                        errors.push(true)
+                    }
+                }
 
                 document.querySelector(`#estoque-view-${productIndex}`).innerHTML = `<span>Estoque to item: ${estoqueItem}<span>`
             }
@@ -115,7 +134,7 @@
                 const { model, qntd, size, color } = getProductInfos(e, element, productIndex)
 
 
-                checkEstoque(model, size, color, productIndex)
+                checkEstoque(model, size, color, qntd, productIndex)
             }
 
             const calcAllPrices = () => {
@@ -166,7 +185,7 @@
                     })
                 }
 
-                checkEstoque(model, size, color, productIndex)
+                checkEstoque(model, size, color, qntd, productIndex)
 
                 let priceOfOrder = products.map(product => product.price).reduce((sum, actual) => sum + actual)
 
@@ -293,6 +312,14 @@
             document.querySelector('#enviar').addEventListener('click', (e) => {
                 e.preventDefault()
 
+                if (errors.length > 0) {
+                    return alert('Tem algo errado com o pedido!!')
+                }
+
+                if(products.length <= 0) {
+                    return alert('O pedido não tem nenhum produto')
+                }
+
                 const name = document.querySelector('#name').value
                 const cpf = document.querySelector('#cpf').value
                 const price = document.querySelector('#price').value
@@ -305,6 +332,7 @@
                     price,
                     products
                 }).done(() => {
+
                     if (confirm("Venda feito com sucesso!")) {
                         document.location.reload(true)
                     }
