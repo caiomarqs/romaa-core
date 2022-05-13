@@ -17,9 +17,19 @@
 </body>
 
 <script>
-
+    const valuesOfModels = []
     $.ajax("/sold-out/stock")
         .then(data => {
+
+            const pricesOfModels = [
+                { model: "Camiseta", price: 57.9 },
+                { model: "Manga Comprida", price: 87.9 },
+                { model: "Moletom", price: 187.9 },
+                { model: "Touca", price: 67.9 }
+            ]
+
+            let products = []
+
             const models = [...new Set(data.map(i => i.model))]
             const colors = [...new Set(data.map(i => i.color))]
             const sizes = [...new Set(data.map(i => i.size))]
@@ -29,11 +39,11 @@
             }
 
             const productsHtml = (i) => `
-                <div class="product-${i}">
+                <div class="product-${i} product-div">
                     <hr></hr>
                     <div class="mb-3">
                         <label for="model-${i}" class="form-label model">Modelo</label>
-                        <select class="form-select" name="model-${i}" id="model-${i}">
+                        <select class="form-select model" name="model-${i}" id="model-${i}">
                                 ${getOption(models)}
                         </select>
                     </div>
@@ -45,14 +55,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="size-${i}" class="form-label size">Tamanho</label>
-                        <select class="form-select" name="size-${i}" id="size-${i}">
+                        <select class="form-select size" name="size-${i}" id="size-${i}">
                                 ${getOption(sizes)}
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="qntd" class="form-label">qntd</label>
-                        <input type="number" class="form-control" id="qntd">
-                        <div id="emailHelp" class="form-text">Somente os digitos!</div>
+                        <label for="qntd" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control qntd" id="qntd-${i}">
                     </div>
                     <hr></hr>
                 </div>
@@ -80,30 +89,192 @@
                         <label for="price" class="form-label">Preço</label>
                         <input type="number" class="form-control" id="price">
                     </div>
-                    <button type="submit" class="btn btn-primary">Fazer Pedido</button>
+                    <button id="enviar" type="submit" class="btn btn-primary">Fazer Pedido</button>
                 </form>
             `
 
             document.querySelector('.root').innerHTML = modelHTML
 
-            // const productModel = {
-            //     model: "",
-            //     size: "",
-            //     color: "",
-            //     qntd: 0
-            // }
 
-            // let productsList = []
+            const calcAllPrices = () => {
+                if (document.querySelectorAll('.product-div').length != 0) {
+                    document.querySelectorAll('.product-div').forEach((product) => {
+                        const labelsGroups = product.querySelectorAll('.mb-3')
+
+                        const e = {}
+                        e.target = labelsGroups[labelsGroups.length - 1].querySelector('.qntd')
+                        e.type = "keyup"
+                        calcPrice(e)
+                    })
+                    return
+                }
+
+                document.querySelector('#price').value = 0
+            }
+
+            const calcPrice = (e) => {
+                const element = e.target
+                const productIndex = Number.parseInt(element.id.split('-')[1])
+
+                const { model, qntd, size, color } = getProductInfos(e, element, productIndex)
+
+                let actualPrice = getPriceByProduct(model, qntd)
+                actualPrice = isNaN(actualPrice) ? 0 : actualPrice
+
+                let product = products.find(product => product.index === productIndex)
+
+                if (product) {
+                    product.index = productIndex
+                    product.model = model
+                    product.qntd = isNaN(qntd) ? 0 : qntd
+                    product.size = size
+                    product.color = color
+                    product.price = actualPrice
+
+                    products[productIndex] = product
+                }
+                else {
+                    products.push({
+                        index: productIndex,
+                        model,
+                        qntd: isNaN(qntd) ? 0 : qntd,
+                        size,
+                        color,
+                        price: actualPrice
+                    })
+                }
+
+                let priceOfOrder = products.map(product => product.price).reduce((sum, actual) => sum + actual)
+
+                let elementsDicountable = products.map(products => {
+                    if (products.model !== "Meia") {
+                        return products.qntd
+                    }
+
+                    return 0
+                }).reduce((sum, actual) => sum + actual)
+
+                let discount = elementsDicountable >= 3 ? 0.22 : 0
+                discount = elementsDicountable >= 5 ? 0.27 : discount
+
+                priceOfOrder = Number((priceOfOrder - (priceOfOrder * discount))).toFixed(2)
+                priceOfOrder = isNaN(priceOfOrder) ? 0 : priceOfOrder
+
+                document.querySelector('#price').value = priceOfOrder
+            }
+
+            const getProductInfos = (e, element, productIndex) => {
+                let model = ''
+                let qntd = ''
+                let size = ''
+                let color = ''
+
+                if (e.type == "keyup") {
+                    model = document.querySelector(`#model-${productIndex}`).value
+                    size = document.querySelector(`#size-${productIndex}`).value
+                    color = document.querySelector(`#color-${productIndex}`).value
+                    qntd = Number.parseInt(element.value)
+
+                }
+                if (e.type == "change") {
+                    if (e.target.name.includes('size')) {
+                        size = element.value
+                    }
+                    else {
+                        size = document.querySelector(`#size-${productIndex}`).value
+                    }
+
+                    if (e.target.name.includes('model')) {
+                        model = element.value
+                    }
+                    else {
+                        model = document.querySelector(`#model-${productIndex}`).value
+                    }
+
+                    if (e.target.name.includes('color')) {
+                        color = element.value
+                    }
+                    else {
+                        color = document.querySelector(`#color-${productIndex}`).value
+                    }
+
+                    qntd = Number.parseInt(document.querySelector(`#qntd-${productIndex}`).value)
+                }
+
+                return { model, qntd, size, color }
+            }
+
+            const getPriceByProduct = (model, qntd) => {
+                if (model == "Meia") {
+                    if ((qntd % 2) == 0) {
+                        return qntd * 25
+                    }
+                    else {
+                        return ((qntd - 1) * 25) + 29.9
+                    }
+                }
+
+                const priceModel = pricesOfModels.find(element => element.model == model).price
+                return (priceModel * qntd)
+            }
+
+            const addEventListeners = () => {
+                const modelBtns = document.querySelectorAll('.model')
+                const qntdBtns = document.querySelectorAll('.qntd')
+
+                if (modelBtns && qntdBtns) {
+                    modelBtns.forEach(modelBtn => {
+                        modelBtn.addEventListener('change', calcPrice)
+                    })
+
+                    qntdBtns.forEach(qntdBtn => {
+                        qntdBtn.addEventListener('keyup', calcPrice)
+                    })
+                }
+            }
+
             let addCount = 0
 
             document.querySelector('#add').addEventListener('click', (e) => {
                 e.preventDefault()
-                $(".products").append(productsHtml(addCount++))
+                const productElement = productsHtml(document.querySelectorAll('.product-div').length)
+                $(".products").append(productElement)
+                addEventListeners()
             })
 
             document.querySelector('#remove').addEventListener('click', (e) => {
                 e.preventDefault()
-                $('.products').children().last().remove()
+
+                const run = new Promise((resolve, rejected) => {
+                    products.pop()
+                    $('.products').children().last().remove()
+                    resolve()
+                })
+
+                run.then(() => {
+                    calcAllPrices()
+                })
+            })
+
+            document.querySelector('#enviar').addEventListener('click', (e) => {
+                e.preventDefault()
+                
+                const name = document.querySelector('#name').value
+                const cpf = document.querySelector('#cpf').value
+                const price = document.querySelector('#price').value
+                
+                calcAllPrices()
+
+                $.post('/sold-out/order', {
+                    name,
+                    cpf,
+                    price,
+                    products
+                }).done(() => {
+                    if (confirm("Venda feito com sucesso!")) {
+                        document.location.reload(true)
+                    }
+                })
             })
         })
         .catch(error => {

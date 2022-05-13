@@ -17,6 +17,7 @@ class SoldoutProductRequest {
         this.size = product.size;
         this.color = product.color;
         this.qntd = product.qntd;
+        this.price = product.price;
     }
 }
 
