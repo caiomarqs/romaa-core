@@ -28,7 +28,7 @@
                 { model: "Touca", price: 67.9 }
             ]
 
-            const errors = []
+            let errors = []
 
             let products = []
 
@@ -99,6 +99,8 @@
             document.querySelector('.root').innerHTML = modelHTML
 
             const checkEstoque = (model, size, color, qntd, productIndex) => {
+                errors = []
+
                 let estoqueItem = data.find(estoque => (
                     estoque.model == model
                     && estoque.size == size
@@ -322,7 +324,7 @@
 
                 const name = document.querySelector('#name').value
                 const cpf = document.querySelector('#cpf').value
-                const price = document.querySelector('#price').value
+                const price = document.querySelector('#price').value.replce(',', '.')
 
                 calcAllPrices()
 
