@@ -3,7 +3,7 @@ class SoldoutOrderRequest{
         this.name = order.name;
         this.cpf = order.cpf;
         this.products = this.mapProducts(order.products)
-        this.price = order.price
+        this.price = Number.parseFloat(order.price)
     }
 
     mapProducts(products){
@@ -16,8 +16,8 @@ class SoldoutProductRequest {
         this.model = product.model;
         this.size = product.size;
         this.color = product.color;
-        this.qntd = product.qntd;
-        this.price = product.price;
+        this.qntd = Number.parseInt(product.qntd);
+        this.price = Number.parseFloat(product.price);
     }
 }
 

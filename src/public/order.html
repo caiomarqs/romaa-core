@@ -52,7 +52,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="color-${i}" class="form-label color">Cor</label>
-                        <select class="form-select" name="color-${i}" id="color-${i}">
+                        <select class="form-select color" name="color-${i}" id="color-${i}">
                                 ${getOption(colors)}
                         </select>
                     </div>
@@ -314,6 +314,8 @@
             document.querySelector('#enviar').addEventListener('click', (e) => {
                 e.preventDefault()
 
+                calcAllPrices()
+
                 if (errors.length > 0) {
                     return alert('Tem algo errado com o pedido!!')
                 }
@@ -323,10 +325,8 @@
                 }
 
                 const name = document.querySelector('#name').value
-                const cpf = document.querySelector('#cpf').value
-                const price = document.querySelector('#price').value.replace(',', '.')
-
-                calcAllPrices()
+                const cpf = Number.parseFloat(document.querySelector('#cpf').value)
+                const price = Number.parseFloat(document.querySelector('#price').value.replace(',', '.'))
 
                 $.post('/sold-out/order', {
                     name,

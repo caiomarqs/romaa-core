@@ -7,7 +7,6 @@ const postOrder = async (body) => {
     let stock = await SoldoutStockCollection.getStock()
 
     order.products.forEach(product => {
-        console.log(product)
         const indexToUpdate = stock.findIndex(stockElement => (
             stockElement.model === product.model
             && stockElement.size === product.size
