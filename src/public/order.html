@@ -45,7 +45,7 @@
                     <hr></hr>
                     <div class="estoque-view" id="estoque-view-${i}"></div>
                     <div class="mb-3">
-                        <label for="model-${i}" class="form-label model">Modelo</label>
+                        <label for="model-${i}" class="form-label">Modelo</label>
                         <select class="form-select model" name="model-${i}" id="model-${i}">
                                 ${getOption(models)}
                         </select>
@@ -161,7 +161,7 @@
 
                 const { model, qntd, size, color } = getProductInfos(e, element, productIndex)
 
-                let actualPrice = getPriceByProduct(model, qntd)
+                let actualPrice = getPriceByProduct(model, qntd, productIndex)
                 actualPrice = isNaN(actualPrice) ? 0 : actualPrice
 
                 let product = products.find(product => product.index === productIndex)
@@ -190,19 +190,29 @@
                 checkEstoque(model, size, color, qntd, productIndex)
 
                 let priceOfOrder = products.map(product => product.price).reduce((sum, actual) => sum + actual)
+                let elmentsNotDiscountable = []
 
-                let elementsDicountable = products.map(products => {
+                let elementsDicountable = products.map((products, i) => {
                     if (products.model !== "Meia") {
                         return products.qntd
                     }
 
+                    elmentsNotDiscountable.push(i)
                     return 0
                 }).reduce((sum, actual) => sum + actual)
+
+                let pricesNotDiscount = 0
+
+                elmentsNotDiscountable.forEach(index => {
+                    pricesNotDiscount += products[index].price
+                })
 
                 let discount = elementsDicountable >= 3 ? 0.22 : 0
                 discount = elementsDicountable >= 5 ? 0.27 : discount
 
-                priceOfOrder = Number((priceOfOrder - (priceOfOrder * discount))).toFixed(2)
+                let priceToDiscount = priceOfOrder - pricesNotDiscount
+
+                priceOfOrder = Number(((priceToDiscount - (priceToDiscount * discount)) + pricesNotDiscount)).toFixed(2)
                 priceOfOrder = isNaN(priceOfOrder) ? 0 : priceOfOrder
 
                 document.querySelector('#price').value = priceOfOrder
@@ -249,14 +259,44 @@
                 return { model, qntd, size, color }
             }
 
-            const getPriceByProduct = (model, qntd) => {
+            const getPriceByProduct = (model, qntd, index) => {
                 if (model == "Meia") {
-                    if ((qntd % 2) == 0) {
-                        return qntd * 25
-                    }
-                    else {
-                        return ((qntd - 1) * 25) + 29.9
-                    }
+
+                    const meias = []
+                    let thisPrice = 0
+
+                    document.querySelectorAll('.model').forEach(element => {
+                        if (element.value == "Meia") {
+                            const id = element.id.split('-')[1]
+                            const qntdThisMeia = document.querySelector(`#qntd-${id}`).value
+
+                            meias.push({
+                                id: id,
+                                qntd: qntdThisMeia
+                            })
+                        }
+                    })
+
+                    meias.forEach(meia => {
+                        let priceElement = 0
+
+                        if ((meia.qntd % 2) == 0) {
+                            priceElement = meia.qntd * 24.95
+                        }
+                        else {
+                            priceElement = ((meia.qntd - 1) * 24.95) + 29.9
+                        }
+
+                        if(products[meia.id]) {
+                            products[meia.id].price = priceElement
+                        }
+                        
+                        if (meia.id == index) {
+                            thisPrice = priceElement
+                        }
+                    })
+
+                    return thisPrice
                 }
 
                 const priceModel = pricesOfModels.find(element => element.model == model).price
@@ -320,12 +360,12 @@
                     return alert('Tem algo errado com o pedido!!')
                 }
 
-                if(products.length <= 0) {
+                if (products.length <= 0) {
                     return alert('O pedido não tem nenhum produto')
                 }
 
                 const name = document.querySelector('#name').value
-                const cpf = Number.parseFloat(document.querySelector('#cpf').value)
+                const cpf = document.querySelector('#cpf').value
                 const price = Number.parseFloat(document.querySelector('#price').value.replace(',', '.'))
 
                 $.post('/sold-out/order', {
